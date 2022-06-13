@@ -2,11 +2,8 @@ package org.jetlinks.protocol.transparent;
 
 import org.jetlinks.core.ProtocolSupport;
 import org.jetlinks.core.Value;
-import org.jetlinks.core.defaults.Authenticator;
 import org.jetlinks.core.defaults.CompositeProtocolSupport;
-import org.jetlinks.core.device.AuthenticationRequest;
 import org.jetlinks.core.device.AuthenticationResponse;
-import org.jetlinks.core.device.DeviceOperator;
 import org.jetlinks.core.device.MqttAuthenticationRequest;
 import org.jetlinks.core.message.codec.CodecFeature;
 import org.jetlinks.core.message.codec.DefaultTransport;
@@ -21,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class TransparentProtocolProvider implements ProtocolSupportProvider {
     private static final DefaultConfigMetadata mqttConfig = new DefaultConfigMetadata(
             "MQTT认证配置"
-            , "mqtt接入时使用的认证配置")
+            , "MQTT接入时使用的认证配置")
             .add("username", "username", "MQTT用户名", StringType.GLOBAL)
             .add("password", "password", "MQTT密码", PasswordType.GLOBAL);
 
@@ -31,7 +28,7 @@ public class TransparentProtocolProvider implements ProtocolSupportProvider {
         CompositeProtocolSupport support = new CompositeProtocolSupport();
         support.setId("transparent");
         support.setName("透传");
-        support.setDocument(DefaultTransport.MQTT, "doc.md", TransparentProtocolProvider.class.getClassLoader());
+        support.setDocument(DefaultTransport.MQTT, "mqtt-document.md", TransparentProtocolProvider.class.getClassLoader());
         //标记为支持透传
         support.addFeature(CodecFeature.transparentCodec);
 
