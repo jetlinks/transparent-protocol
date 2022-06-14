@@ -42,14 +42,18 @@ public class TransparentProtocolProvider implements ProtocolSupportProvider {
         support.addAuthenticator(DefaultTransport.MQTT, (request, device) -> {
             MqttAuthenticationRequest mqttRequest = ((MqttAuthenticationRequest) request);
             return device
-                    .getSelfConfig("password").map(Value::asString) //密码
-                    .flatMap(password -> {
-                        if (password.equals(mqttRequest.getPassword())) {
-                            //认证成功，需要返回设备ID
-                            return Mono.just(AuthenticationResponse.success(mqttRequest.getUsername()));
+                    .getConfigs("username", "password")
+                    .flatMap(values -> {
+                        String username = values.getValue("username").map(Value::asString).orElse(null);
+                        String password = values.getValue("password").map(Value::asString).orElse(null);
+                        if (mqttRequest.getUsername().equals(username) && mqttRequest
+                                .getPassword()
+                                .equals(password)) {
+                            return Mono.just(AuthenticationResponse.success());
                         } else {
                             return Mono.just(AuthenticationResponse.error(400, "密码错误"));
                         }
+
                     });
         });
 
