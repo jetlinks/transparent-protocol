@@ -45,10 +45,10 @@
         <project.build.locales>zh_CN</project.build.locales>
         <java.version>1.8</java.version>
         <project.build.jdk>${java.version}</project.build.jdk>
-        <spring.boot.version>2.2.8.RELEASE</spring.boot.version>
-        <hsweb.framework.version>4.0.3</hsweb.framework.version>
+        <spring.boot.version>2.7.18</spring.boot.version>
+        <hsweb.framework.version>4.0.17</hsweb.framework.version>
         <hsweb.expands.version>3.0.2</hsweb.expands.version>
-        <reactor.version>2020.0.6</reactor.version>
+        <reactor.version>2020.0.46</reactor.version>
     </properties>
 
     <profiles>
@@ -159,7 +159,7 @@
         <dependency>
             <groupId>org.jetlinks</groupId>
             <artifactId>jetlinks-supports</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <version>1.2.2</version>
         </dependency>
 
         <dependency>
@@ -220,12 +220,12 @@
         <repository>
             <id>releases</id>
             <name>Nexus Release Repository</name>
-            <url>https://nexus.hsweb.me/content/repositories/releases/</url>
+            <url>https://nexus.jetlinks.cn/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>Nexus Snapshot Repository</name>
-            <url>https://nexus.hsweb.me/content/repositories/snapshots/</url>
+            <url>https://nexus.jetlinks.cn/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -234,7 +234,7 @@
         <repository>
             <id>hsweb-nexus</id>
             <name>Nexus Release Repository</name>
-            <url>https://nexus.hsweb.me/content/groups/public/</url>
+            <url>https://nexus.jetlinks.cn/content/groups/public/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
