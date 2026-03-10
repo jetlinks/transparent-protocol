@@ -1,5 +1,7 @@
 package org.jetlinks.protocol.transparent;
 
+import io.netty.buffer.ByteBufUtil;
+import lombok.SneakyThrows;
 import org.jetlinks.core.ProtocolSupport;
 import org.jetlinks.core.Value;
 import org.jetlinks.core.defaults.CompositeProtocolSupport;
@@ -8,6 +10,8 @@ import org.jetlinks.core.device.DeviceFeatures;
 import org.jetlinks.core.device.MqttAuthenticationRequest;
 import org.jetlinks.core.message.codec.CodecFeature;
 import org.jetlinks.core.message.codec.DefaultTransport;
+import org.jetlinks.core.message.codec.EncodedMessage;
+import org.jetlinks.core.message.codec.MessageParser;
 import org.jetlinks.core.metadata.DefaultConfigMetadata;
 import org.jetlinks.core.metadata.types.PasswordType;
 import org.jetlinks.core.metadata.types.StringType;
@@ -19,6 +23,7 @@ import org.jetlinks.protocol.transparent.mqtt.TransparentMqttMessageCodec;
 import org.jetlinks.protocol.transparent.tcp.TransparentTcpMessageCodec;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.tcp.TcpServer;
 
 public class TransparentProtocolProvider implements ProtocolSupportProvider {
 
@@ -34,7 +39,7 @@ public class TransparentProtocolProvider implements ProtocolSupportProvider {
         {
             support.setDocument(DefaultTransport.MQTT, "mqtt-document.md",
                                 TransparentProtocolProvider.class.getClassLoader());
-            //MQTT Codec
+            // MQTT Codec
             support.addMessageCodecSupport(new TransparentMqttMessageCodec());
             // mqtt认证策略
             support.addPrincipalMetadataResolver(
@@ -53,10 +58,15 @@ public class TransparentProtocolProvider implements ProtocolSupportProvider {
         }
 
         {
-            support.setDocument(DefaultTransport.MQTT, "tcp-document.md",
+            support.setDocument(DefaultTransport.TCP, "tcp-document.md",
                                 TransparentProtocolProvider.class.getClassLoader());
             // TCP Codec
-            support.addMessageCodecSupport(new TransparentTcpMessageCodec());
+            TransparentTcpMessageCodec codec = new TransparentTcpMessageCodec(context);
+            support.addMessageCodecSupport(codec);
+
+            // 自定义粘拆包规则
+            support.setMessageParser(DefaultTransport.TCP, () -> codec);
+
             // 身份策略
             support.addPrincipalMetadataResolver(
                 DefaultTransport.TCP,
@@ -74,4 +84,5 @@ public class TransparentProtocolProvider implements ProtocolSupportProvider {
 
         return Mono.just(support);
     }
+
 }
