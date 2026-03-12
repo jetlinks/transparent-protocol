@@ -77,6 +77,7 @@ public class TransparentProtocolProvider implements ProtocolSupportProvider {
                     // 不指定Identifier,使用平台的设备ID.
                     // token 方式认证
                     metadata.setCredentialType(CredentialType.token);
+                    metadata.setDescription("注册帧格式: @@{身份标识}&{AccessToken}## , 心跳帧格式: @@ping##, 其他报文遵守ModbusRTU格式.");
                     return Flux.just(metadata);
                 }
             );

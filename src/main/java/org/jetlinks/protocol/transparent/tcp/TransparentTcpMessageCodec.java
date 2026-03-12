@@ -55,7 +55,11 @@ public class TransparentTcpMessageCodec implements DeviceMessageCodec, MessagePa
             // 首帧为注册帧: id&token
             String[] idAndToken = str.split("&");
             if (idAndToken.length != 2) {
-                ctx.getSession().close();
+                this.context
+                    .getMonitor()
+                    .logger()
+                    .warn("注册帧格式错误:{}", message);
+                ctx.getConnection().disconnect();
                 return Flux.empty();
             }
 
@@ -67,6 +71,15 @@ public class TransparentTcpMessageCodec implements DeviceMessageCodec, MessagePa
                         TokenCredential.create(idAndToken[1])
                     )
                 )
+                // 没有提取到设备,设备没添加到平台?
+                .switchIfEmpty(
+                    Mono.fromRunnable(() -> {
+                        this.context
+                            .getMonitor()
+                            .logger()
+                            .error("设备认证失败,注册帧错误或者设备未注册.");
+                        ctx.getConnection().disconnect();
+                    }))
                 .<DeviceMessage>mapNotNull(principal -> {
                     if (principal.isVerified()) {
                         TcpTransparentMessageParser parser = parserBind.get(ctx.getConnection());
